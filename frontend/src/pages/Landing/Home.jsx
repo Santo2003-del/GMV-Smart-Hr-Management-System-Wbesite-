@@ -61,7 +61,7 @@ const Home = () => {
         <div style={{ position: "absolute", top: "15%", right: "15%", width: "500px", height: "500px", background: "rgba(0, 255, 157, 0.15)", borderRadius: "50%", filter: "blur(150px)", zIndex: 0 }} />
         <div style={{ position: "absolute", bottom: "10%", left: "5%", width: "600px", height: "600px", background: "rgba(0, 198, 255, 0.1)", borderRadius: "50%", filter: "blur(180px)", zIndex: 0 }} />
 
-        <div className="container" style={{ width: "95%", maxWidth: "1440px", margin: "0 auto", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "2rem", alignItems: "center" }}>
+        <div className="container" style={{ width: "95%", maxWidth: "1440px", margin: "0 auto", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "5rem", alignItems: "center" }}>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}>
             <motion.div variants={fadeInUp} style={{ marginBottom: "2.5rem" }}>
@@ -189,12 +189,13 @@ const Home = () => {
 
             {/* Premium Stat Badges */}
             <motion.div
+              className="hero-badge-accuracy"
               animate={{ y: [-15, 15, -15] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               style={{
                 position: "absolute",
                 top: "15%",
-                left: "-12%",
+                left: "-50px",
                 zIndex: 3,
                 background: "rgba(10, 10, 10, 0.8)",
                 backdropFilter: "blur(12px)",
@@ -210,12 +211,13 @@ const Home = () => {
             </motion.div>
 
             <motion.div
+              className="hero-badge-support"
               animate={{ y: [15, -15, 15] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               style={{
                 position: "absolute",
                 bottom: "20%",
-                right: "-10%",
+                right: "-40px",
                 zIndex: 3,
                 background: "rgba(10, 10, 10, 0.8)",
                 backdropFilter: "blur(12px)",
@@ -236,8 +238,7 @@ const Home = () => {
           @media (max-width: 1024px) {
             .container { grid-template-columns: 1fr !important; gap: 4rem !important; padding-top: 2rem; text-align: center; }
             .container > div { display: flex; flex-direction: column; align-items: center; }
-            motion.p { margin: 0 auto 3rem !important; }
-            .container div[style*="position: absolute"] { display: none; } /* Hide floating badges on mobile */
+            .hero-badge-accuracy, .hero-badge-support { display: none !important; }
           }
           @media (max-width: 640px) {
             .hero-btns { flex-direction: column !important; width: 100% !important; gap: 1rem !important; }
