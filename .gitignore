@@ -1,0 +1,26 @@
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build and dist fields
+dist/
+build/
+coverage/
+
+# Temporary and Cache files
+.tmp/
+.cache/
+.eslintcache
+
+# OS Files
+.DS_Store
+Thumbs.db
