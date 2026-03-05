@@ -118,7 +118,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 //  SERVE REACT BUILD IN PRODUCTION (same domain)
 // ═══════════════════════════════════════════════
 const REACT_BUILD = path.join(__dirname, "..", "frontend", "build");
-if (process.env.NODE_ENV === "production" && fs.existsSync(REACT_BUILD)) {
+if (fs.existsSync(REACT_BUILD)) {
   app.use(express.static(REACT_BUILD));
 }
 
@@ -140,7 +140,7 @@ app.use("/api/support", require("./routes/supportRoutes"));
 // ═══════════════════════════════════════════════
 //  REACT SPA FALLBACK (production only)
 // ═══════════════════════════════════════════════
-if (process.env.NODE_ENV === "production" && fs.existsSync(REACT_BUILD)) {
+if (fs.existsSync(REACT_BUILD)) {
   app.get("*", (req, res) => {
     res.sendFile(path.join(REACT_BUILD, "index.html"));
   });
