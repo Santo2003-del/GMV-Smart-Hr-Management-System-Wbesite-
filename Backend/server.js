@@ -141,7 +141,7 @@ app.use("/api/support", require("./routes/supportRoutes"));
 //  REACT SPA FALLBACK (production only)
 // ═══════════════════════════════════════════════
 if (fs.existsSync(REACT_BUILD)) {
-  app.get("*", (req, res) => {
+  app.get("(.*)", (req, res) => {
     res.sendFile(path.join(REACT_BUILD, "index.html"));
   });
 }
