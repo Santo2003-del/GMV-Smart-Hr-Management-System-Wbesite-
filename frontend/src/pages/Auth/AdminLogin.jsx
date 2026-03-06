@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaUserTie, FaEnvelope, FaLock, FaArrowRight, FaBuilding, FaCircleNotch } from "react-icons/fa";
+import { FaUserTie, FaEnvelope, FaLock, FaArrowRight, FaBuilding, FaCircleNotch, FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginUser, clearAuthStorage } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
@@ -28,6 +28,7 @@ const AdminLogin = () => {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -97,7 +98,10 @@ const AdminLogin = () => {
             <label>Password</label>
             <div className="hr-input-wrapper">
               <FaLock className="field-icon" />
-              <input type="password" name="password" placeholder="••••••••" onChange={handleChange} value={form.password} required autoComplete="current-password" />
+              <input type={showPassword ? "text" : "password"} name="password" placeholder="••••••••" onChange={handleChange} value={form.password} required autoComplete="current-password" />
+              <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </div>
             </div>
           </div>
 
@@ -166,7 +170,7 @@ const AdminLogin = () => {
         .hr-input-wrapper { position: relative; }
         .field-icon { position:absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #00ff9d; font-size:1rem; z-index:2; }
         .hr-input-wrapper input{
-          width:100%; box-sizing:border-box; padding: 15px 15px 15px 46px;
+          width:100%; box-sizing:border-box; padding: 15px 46px 15px 46px;
           border-radius: 14px; border: 1px solid #333; background: #0a0a0a;
           font-size: .95rem; outline:none; transition:.25s; color: #fff;
         }
@@ -184,6 +188,9 @@ const AdminLogin = () => {
         .hr-btn:disabled { background: #333; box-shadow:none; cursor:not-allowed; transform:none; color: #666; }
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg);} }
+        
+        .eye-icon { position:absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #64748b; font-size:1.1rem; z-index:2; cursor: pointer; transition: color 0.2s; }
+        .eye-icon:hover { color: #00ff9d; }
 
         .hr-footer { margin-top: 26px; text-align:center; font-size:.9rem; color: #64748b; }
         .hr-footer a{

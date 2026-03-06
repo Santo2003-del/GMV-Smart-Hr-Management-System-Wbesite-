@@ -14,6 +14,8 @@ import {
   FaExclamationTriangle,
   FaChevronLeft,
   FaChevronRight,
+  FaEye,
+  FaEyeSlash
 } from "react-icons/fa";
 import { useClientPagination } from "../../utils/useClientPagination";
 import Pagination from "../../components/Pagination";
@@ -30,6 +32,7 @@ const HRManagement = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -311,19 +314,28 @@ const HRManagement = () => {
                   <label>
                     {isEditMode ? "New Password (Optional)" : "Password"}
                   </label>
-                  <input
-                    type="password"
-                    placeholder={
-                      isEditMode
-                        ? "Leave blank to keep current"
-                        : "Min 6 characters"
-                    }
-                    required={!isEditMode}
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder={
+                        isEditMode
+                          ? "Leave blank to keep current"
+                          : "Min 6 characters"
+                      }
+                      required={!isEditMode}
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      style={{ width: '100%', paddingRight: '40px', boxSizing: 'border-box' }}
+                    />
+                    <div
+                      className="eye-icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="form-group full">
@@ -440,6 +452,8 @@ const HRManagement = () => {
         .form-group label{font-weight:900;color:#334155;font-size:.9rem}
         .form-group input{border:1px solid var(--border);border-radius:12px;padding:11px 12px;outline:none;font-weight:700}
         .form-group input:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+        .eye-icon { position:absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748b; font-size:1.1rem; z-index:2; cursor: pointer; transition: color 0.2s; }
+        .eye-icon:hover { color: #2563eb; }
         .submit-btn{
           width:100%;margin-top:12px;border:none;border-radius:12px;padding:12px;background:var(--primary);color:#fff;font-weight:1000;cursor:pointer;transition:.2s
         }

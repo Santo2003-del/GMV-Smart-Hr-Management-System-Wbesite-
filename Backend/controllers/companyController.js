@@ -230,6 +230,11 @@ const updateCompanyProfile = async (req, res) => {
     if (updates.name) company.name = String(updates.name).trim();
     if (updates.logo) company.logo = updates.logo;
 
+    // Explicitly mark subdocuments modified to ensure changes hit DB
+    company.markModified('attendancePolicy');
+    company.markModified('location');
+    company.markModified('officeTiming');
+
     await company.save();
     res.status(200).json({ message: "Profile & Settings Updated ✅", company });
   } catch (error) {

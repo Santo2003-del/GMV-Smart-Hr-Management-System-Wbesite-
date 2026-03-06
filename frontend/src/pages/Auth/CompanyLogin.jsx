@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaBuilding, FaEnvelope, FaLock, FaArrowRight, FaShieldAlt } from "react-icons/fa";
+import { FaBuilding, FaEnvelope, FaLock, FaArrowRight, FaShieldAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginUser } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
@@ -28,6 +28,7 @@ const CompanyLogin = () => {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -79,7 +80,10 @@ const CompanyLogin = () => {
 
           <div className="company-input">
             <FaLock className="field-icon" />
-            <input type="password" name="password" placeholder="Password" onChange={handleChange} value={form.password} required autoComplete="current-password" />
+            <input type={showPassword ? "text" : "password"} name="password" placeholder="Password" onChange={handleChange} value={form.password} required autoComplete="current-password" />
+            <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
           </div>
 
           <button className="company-btn" disabled={loading}>
@@ -142,7 +146,7 @@ const CompanyLogin = () => {
         }
         .company-input input{
           width:100%; box-sizing:border-box;
-          padding: 16px 16px 16px 48px; border-radius:14px;
+          padding: 16px 48px 16px 48px; border-radius:14px;
           border: 1px solid #333; font-size:.95rem;
           background:#0a0a0a; color: #fff; outline:none; transition:.25s;
         }
@@ -174,6 +178,9 @@ const CompanyLogin = () => {
           display:flex; justify-content:center; align-items:center; gap:6px;
           font-weight:700;
         }
+        
+        .eye-icon { position:absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #64748b; font-size:1.1rem; z-index:2; cursor: pointer; transition: color 0.2s; }
+        .eye-icon:hover { color: #00c6ff; }
 
         @media (max-width:480px){
           .company-card{ padding: 36px 22px; border-radius:0; box-shadow:none; border: none; }

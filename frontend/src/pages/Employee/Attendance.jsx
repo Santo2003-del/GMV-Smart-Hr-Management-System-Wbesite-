@@ -126,6 +126,21 @@ const getAccuratePosition = ({
 
     const fail = (err) => {
       if (done) return;
+
+      // If high accuracy failed, attempt low accuracy fallback
+      if (enableHighAccuracy && (err.code === 3 || err.code === 2)) {
+        if (watchId != null) navigator.geolocation.clearWatch(watchId);
+
+        const fallbackOpts = { enableHighAccuracy: false, timeout: 6000, maximumAge: 30000 };
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve(pos),
+          (fbErr) => reject(fbErr),
+          fallbackOpts
+        );
+        done = true;
+        return;
+      }
+
       done = true;
       if (watchId != null) navigator.geolocation.clearWatch(watchId);
       reject(err);

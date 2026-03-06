@@ -17,7 +17,9 @@ import {
   FaBriefcase,
   FaEnvelope,
   FaPhone,
-  FaImage
+  FaImage,
+  FaEye,
+  FaEyeSlash
 } from "react-icons/fa";
 import { readEnv } from "../../utils/env";
 
@@ -48,6 +50,7 @@ const Register = () => {
 
   const [facingMode, setFacingMode] = useState("user");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const MODEL_URL = useMemo(() => {
     return (
@@ -360,7 +363,10 @@ const Register = () => {
                 <label>Password <span className="req">*</span></label>
                 <div className="input-wrap">
                   <FaLock className="field-icon" />
-                  <input type="password" placeholder="••••••••" value={formData.password} onChange={e => setField("password", e.target.value)} required />
+                  <input type={showPassword ? "text" : "password"} placeholder="••••••••" value={formData.password} onChange={e => setField("password", e.target.value)} required />
+                  <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </div>
                 </div>
               </div>
 
@@ -655,7 +661,7 @@ const Register = () => {
         .input-wrap { position: relative; }
         .input-wrap input, .input-wrap select {
           width: 100%;
-          padding: 12px 15px 12px 42px;
+          padding: 12px 42px 12px 42px;
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 12px;
           font-size: 0.95rem;
@@ -679,6 +685,8 @@ const Register = () => {
           position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
           color: #10b981; font-size: 1.1rem; pointer-events: none;
         }
+        .eye-icon { position:absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #64748b; font-size:1.1rem; z-index:2; cursor: pointer; transition: color 0.2s; }
+        .eye-icon:hover { color: #10b981; }
 
         /* File Upload */
         .hidden-input { display: none; }

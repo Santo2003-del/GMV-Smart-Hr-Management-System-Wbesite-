@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaEnvelope, FaLock, FaArrowRight, FaLeaf } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaArrowRight, FaLeaf, FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginUser } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
@@ -28,6 +28,7 @@ const EmployeeLogin = () => {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -80,7 +81,10 @@ const EmployeeLogin = () => {
 
           <div className="emp-input">
             <FaLock className="emp-icon" />
-            <input type="password" name="password" placeholder="Password" onChange={handleChange} value={form.password} required autoComplete="current-password" />
+            <input type={showPassword ? "text" : "password"} name="password" placeholder="Password" onChange={handleChange} value={form.password} required autoComplete="current-password" />
+            <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
           </div>
 
           <button className="emp-btn" disabled={loading}>
@@ -145,7 +149,7 @@ const EmployeeLogin = () => {
         }
         .emp-input input{
           width:100%; box-sizing:border-box;
-          padding: 16px 16px 16px 48px; border-radius:14px;
+          padding: 16px 48px 16px 48px; border-radius:14px;
           border: 1px solid #333; font-size:.95rem;
           background: #0a0a0a; color: #fff; outline:none; transition:.25s;
         }
@@ -168,6 +172,9 @@ const EmployeeLogin = () => {
           display:inline-flex; align-items:center; gap:6px;
         }
         .hr-link{ margin-top: 10px; font-size:.85rem; }
+        
+        .eye-icon { position:absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #64748b; font-size:1.1rem; z-index:2; cursor: pointer; transition: color 0.2s; }
+        .eye-icon:hover { color: #00ff9d; }
 
         @media(max-width:480px){
           .employee-card{ padding: 34px 22px; border-radius:0; box-shadow:none; border: none; }
