@@ -179,56 +179,58 @@ const updateCompanyProfile = async (req, res) => {
       updates.officeTiming = ot;
     }
 
-    // ✅ sanitize location
+    // ✅ robust merge for nested objects (avoid overwriting siblings)
+    const company = await Company.findById(companyId);
+    if (!company) return res.status(404).json({ message: "Company not found" });
+
+    // Location merge
     if (updates.location && typeof updates.location === 'object') {
       const loc = updates.location;
-      if (loc.address != null) loc.address = clampStr(loc.address, 300);
-      if (loc.lat != null) loc.lat = Number(loc.lat);
-      if (loc.lng != null) loc.lng = Number(loc.lng);
-
-      // radius (meters) can only be updated by SuperAdmin ideally,
-      // but we allow company owner too if you want - here we block unless SuperAdmin
-      if (loc.radius != null && req.user.role !== 'SuperAdmin') {
-        delete loc.radius; // keep safe
-      } else if (loc.radius != null) {
+      if (loc.address !== undefined) company.location.address = clampStr(loc.address, 300);
+      if (loc.lat !== undefined) company.location.lat = Number(loc.lat);
+      if (loc.lng !== undefined) company.location.lng = Number(loc.lng);
+      if (loc.radius !== undefined && (req.user.role === 'SuperAdmin')) {
         const r = Number(loc.radius);
-        loc.radius = Number.isFinite(r) && r >= 100 ? r : 3000;
+        company.location.radius = Number.isFinite(r) && r >= 50 ? r : 3000;
       }
-      updates.location = loc;
     }
 
-    // ✅ sanitize attendancePolicy
+    // OfficeTiming merge
+    if (updates.officeTiming && typeof updates.officeTiming === 'object') {
+      const ot = updates.officeTiming;
+      if (ot.startTime) company.officeTiming.startTime = String(ot.startTime).slice(0, 5);
+      if (ot.endTime) company.officeTiming.endTime = String(ot.endTime).slice(0, 5);
+      if (ot.timeZone) company.officeTiming.timeZone = String(ot.timeZone).trim();
+      if (ot.workingHours !== undefined) {
+        const wh = Number(ot.workingHours);
+        company.officeTiming.workingHours = Number.isFinite(wh) && wh > 0 ? wh : 9;
+      }
+    }
+
+    // AttendancePolicy merge (persistence fix)
     if (updates.attendancePolicy && typeof updates.attendancePolicy === 'object') {
       const p = updates.attendancePolicy;
 
-      // Handle 'method' from frontend (persistence fix)
       if (p.method === 'FACE_ONLY') {
-        p.requireGps = false;
-        p.requireFace = true;
+        company.attendancePolicy.method = 'FACE_ONLY';
+        company.attendancePolicy.requireGps = false;
+        company.attendancePolicy.requireFace = true;
       } else if (p.method === 'GPS_FACE') {
-        p.requireGps = true;
-        p.requireFace = true;
+        company.attendancePolicy.method = 'GPS_FACE';
+        company.attendancePolicy.requireGps = true;
+        company.attendancePolicy.requireFace = true;
       }
 
-      if (typeof p.requireGps === 'boolean') { /* ok */ }
-      if (typeof p.requireFace === 'boolean') { /* ok */ }
-
-      // allowedMethods sanitize
-      if (Array.isArray(p.allowedMethods)) {
-        const allowed = ['GPS_FACE', 'FACE_ONLY', 'QR_FACE', 'WIFI_FACE', 'IP_FACE', 'MANUAL_HR'];
-        p.allowedMethods = p.allowedMethods.filter((m) => allowed.includes(m));
-        if (!p.allowedMethods.length) p.allowedMethods = ['GPS_FACE', 'MANUAL_HR'];
-      }
-
-      if (typeof p.qrSecret === 'string') p.qrSecret = p.qrSecret.trim();
-      if (Array.isArray(p.allowedWifiSSIDs)) p.allowedWifiSSIDs = p.allowedWifiSSIDs.map(String).slice(0, 50);
-      if (Array.isArray(p.allowedIpRanges)) p.allowedIpRanges = p.allowedIpRanges.map(String).slice(0, 50);
-      if (typeof p.requireDeviceBinding === 'boolean') { /* ok */ }
-
-      updates.attendancePolicy = p;
+      if (p.qrSecret !== undefined) company.attendancePolicy.qrSecret = String(p.qrSecret).trim();
+      if (Array.isArray(p.allowedMethods)) company.attendancePolicy.allowedMethods = p.allowedMethods.slice(0, 10);
+      if (p.requireDeviceBinding !== undefined) company.attendancePolicy.requireDeviceBinding = !!p.requireDeviceBinding;
     }
 
-    const company = await Company.findByIdAndUpdate(companyId, updates, { new: true });
+    // Base updates
+    if (updates.name) company.name = String(updates.name).trim();
+    if (updates.logo) company.logo = updates.logo;
+
+    await company.save();
     res.status(200).json({ message: "Profile & Settings Updated ✅", company });
   } catch (error) {
     console.error("updateCompanyProfile error:", error);
