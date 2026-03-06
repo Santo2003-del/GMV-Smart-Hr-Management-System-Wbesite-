@@ -1045,7 +1045,10 @@ const EmployeeDashboard = () => {
               <button className="iconBtn" onClick={() => setShowTextModal(false)}><FaTimes /></button>
             </div>
             <textarea className="modalText" placeholder={actionType === "in" ? "Today's plan / tasks..." : "Today's work summary..."} value={reportText} onChange={(e) => setReportText(e.target.value)} />
-            <button className="edash-btn-p" onClick={proceedToVerification}>Proceed <FaArrowRight /></button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button className="edash-btn-p" onClick={proceedToVerification}>Proceed <FaArrowRight /></button>
+              <button className="edash-btn-g" onClick={() => { setReportText(""); proceedToVerification(); }}>Skip</button>
+            </div>
           </div>
         </div>
       )}

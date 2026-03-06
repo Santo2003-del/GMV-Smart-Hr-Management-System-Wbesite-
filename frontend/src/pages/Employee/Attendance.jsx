@@ -436,6 +436,19 @@ const Attendance = () => {
         return null;
       }
 
+      // Proactive permission check
+      try {
+        if (navigator.permissions && navigator.permissions.query) {
+          const status = await navigator.permissions.query({ name: 'geolocation' });
+          if (status.state === 'denied') {
+            toast.error("Location access denied. Please enable location in browser settings.");
+            return null;
+          }
+        }
+      } catch (e) {
+        console.warn("Permission query not supported", e);
+      }
+
       setLocLoading(true);
 
       const applyPos = (pos) => {
@@ -977,14 +990,19 @@ const Attendance = () => {
 
                       <td>
                         {locLink ? (
-                          <a
-                            className="mapLink"
-                            href={locLink}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <FaMapMarkerAlt /> Map
-                          </a>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <a
+                              className="mapLink"
+                              href={locLink}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <FaMapMarkerAlt /> Map
+                            </a>
+                            <span style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic' }}>
+                              {row.location?.lat ? `${row.location.lat.toFixed(4)}, ${row.location.lng.toFixed(4)}` : ""}
+                            </span>
+                          </div>
                         ) : (
                           <span className="muted">--</span>
                         )}

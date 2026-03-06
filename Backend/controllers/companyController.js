@@ -201,6 +201,15 @@ const updateCompanyProfile = async (req, res) => {
     if (updates.attendancePolicy && typeof updates.attendancePolicy === 'object') {
       const p = updates.attendancePolicy;
 
+      // Handle 'method' from frontend (persistence fix)
+      if (p.method === 'FACE_ONLY') {
+        p.requireGps = false;
+        p.requireFace = true;
+      } else if (p.method === 'GPS_FACE') {
+        p.requireGps = true;
+        p.requireFace = true;
+      }
+
       if (typeof p.requireGps === 'boolean') { /* ok */ }
       if (typeof p.requireFace === 'boolean') { /* ok */ }
 

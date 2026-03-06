@@ -15,7 +15,10 @@ const AttendancePolicySchema = new mongoose.Schema(
     qrSecret: { type: String, default: '' },
     allowedWifiSSIDs: { type: [String], default: [] },
     allowedIpRanges: { type: [String], default: [] },
-    requireDeviceBinding: { type: Boolean, default: false }
+    requireDeviceBinding: { type: Boolean, default: false },
+
+    // Persistence helper
+    method: { type: String, default: 'GPS_FACE' }
   },
   { _id: false }
 );
