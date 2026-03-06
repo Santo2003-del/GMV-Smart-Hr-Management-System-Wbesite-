@@ -25,6 +25,7 @@ const recruitmentRoutes = require("./routes/recruitmentRoutes");
 const onboardingRoutes = require("./routes/onboardingRoutes");
 
 const app = express();
+app.set("trust proxy", 1); // Enable trust proxy for Nginx/Reverse Proxy IP detection
 
 // ═══════════════════════════════════════════════
 //  SECURITY MIDDLEWARE LAYER
