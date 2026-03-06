@@ -1,5 +1,9 @@
 // Backend/controllers/employeeController.js
 const User = require('../models/User');
+const Employee = require('../models/Employee');
+const Admin = require('../models/Admin');
+const CompanyAdmin = require('../models/CompanyAdmin');
+const SuperAdmin = require('../models/SuperAdmin');
 const Leave = require('../models/Leave');
 
 let getDateStringInTZ;

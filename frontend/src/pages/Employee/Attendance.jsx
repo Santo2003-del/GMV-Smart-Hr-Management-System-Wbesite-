@@ -930,18 +930,24 @@ const Attendance = () => {
                   return (
                     <tr key={row._id} className="tr">
                       <td className="date">
-                        <FaCalendarAlt className="dim" />
-                        <span>{formatYMD(row?.date)}</span>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+                          <FaCalendarAlt className="dim" />
+                          <span>{formatYMD(row?.date)}</span>
+                        </div>
                       </td>
 
                       <td className="time in">
-                        <FaClock />
-                        {formatTime(row?.punchInTime)}
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                          <FaClock />
+                          {formatTime(row?.punchInTime)}
+                        </div>
                       </td>
 
                       <td className="time out">
-                        <FaClock />
-                        {formatTime(row?.punchOutTime)}
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                          <FaClock />
+                          {formatTime(row?.punchOutTime)}
+                        </div>
                       </td>
 
                       <td className="hours">
@@ -1219,9 +1225,9 @@ const Attendance = () => {
         .tr:hover{ background: rgba(248,250,252,0.70); }
         .msg{ padding: 36px !important; text-align:center; color: var(--muted); font-weight: 900; }
 
-        .date{ display:flex; align-items:center; gap: 10px; font-weight: 950; }
+        .date{ font-weight: 950; }
         .dim{ color: rgba(79,70,229,0.65); }
-        .time{ display:inline-flex; align-items:center; gap: 8px; font-weight: 900; }
+        .time{ font-weight: 900; }
         .time.in{ color: #059669; }
         .time.out{ color: #ef4444; }
         .hours strong{ font-size: 14px; }

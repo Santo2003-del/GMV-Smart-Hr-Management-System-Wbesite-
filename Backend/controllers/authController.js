@@ -5,6 +5,10 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const User = require('../models/User');
+const SuperAdmin = require('../models/SuperAdmin');
+const CompanyAdmin = require('../models/CompanyAdmin');
+const Admin = require('../models/Admin');
+const Employee = require('../models/Employee');
 const Company = require('../models/Company');
 const Inquiry = require('../models/Inquiry');
 

@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const rateLimit = require('express-rate-limit');
-
 const { uploadImage } = require('../middleware/uploadMiddleware');
+const { createRateLimiter } = require('../utils/rateLimitHelper');
 
 const {
   loginUser,
@@ -16,36 +15,32 @@ const {
 //  RATE LIMITERS (Brute Force Protection)
 // ═══════════════════════════════════════════════
 
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,   // 15 minutes
-  max: 10,                     // 10 attempts per IP
+const loginLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
   message: { message: 'Too many login attempts. Please try again after 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
+  redisKeyPrefix: 'rl:login:'
 });
 
-const superAdminLimiter = rateLimit({
-  windowMs: 30 * 60 * 1000,   // 30 minutes
-  max: 5,                      // 5 attempts per IP
+const superAdminLimiter = createRateLimiter({
+  windowMs: 30 * 60 * 1000,
+  max: 100,
   message: { message: 'Too many attempts. Try again after 30 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
+  redisKeyPrefix: 'rl:superadmin:'
 });
 
-const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,   // 1 hour
-  max: 5,                      // 5 registrations per IP
+const registerLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 1000,
   message: { message: 'Too many registration attempts. Please try again later.' },
-  standardHeaders: true,
-  legacyHeaders: false,
+  redisKeyPrefix: 'rl:register:'
 });
 
-const inquiryLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,   // 1 hour
-  max: 3,                      // 3 inquiries per IP
+const inquiryLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000,
+  max: 50,
   message: { message: 'Too many inquiries. Please try again later.' },
-  standardHeaders: true,
-  legacyHeaders: false,
+  redisKeyPrefix: 'rl:inquiry:'
 });
 
 // ═══════════════════════════════════════════════

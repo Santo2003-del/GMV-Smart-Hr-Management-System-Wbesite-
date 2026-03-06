@@ -9,6 +9,10 @@ router.use(protect, superAdminOnly);
 
 // Dashboard
 router.get('/dashboard-data', controller.getDashboardData);
+router.get('/companies', controller.getAllCompanies);
+router.get('/stats', controller.getStats);
+router.get('/inquiries', controller.getAllInquiries);
+router.get('/requests', controller.getHrRequests);
 
 // Inquiry provisioning
 router.post('/approve-inquiry', controller.approveInquiry);

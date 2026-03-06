@@ -6,6 +6,7 @@ const hrController = require('../controllers/hrController');
 
 // Employees
 router.get('/employees', protect, hrOnly, hrController.getAllEmployees);
+router.get('/employee/:userId', protect, hrOnly, hrController.getEmployeeById);
 router.put('/employee/:userId', protect, hrOnly, hrController.updateEmployeeDetails);
 router.post('/employee/approve', protect, hrOnly, hrController.approveEmployee);
 router.delete('/employee/:userId', protect, hrOnly, hrController.deleteEmployee);

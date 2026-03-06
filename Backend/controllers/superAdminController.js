@@ -1,6 +1,10 @@
 // Backend/controllers/superAdminController.js
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const SuperAdmin = require('../models/SuperAdmin');
+const CompanyAdmin = require('../models/CompanyAdmin');
+const Admin = require('../models/Admin');
+const Employee = require('../models/Employee');
 const Company = require('../models/Company');
 const Inquiry = require('../models/Inquiry');
 const Attendance = require('../models/Attendance');
@@ -67,6 +71,57 @@ const getAllInquiries = async (req, res) => {
     res.json(inquiries);
   } catch (e) {
     console.error("getAllInquiries error:", e);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/* ================= 3) GET ALL COMPANIES ================= */
+const getAllCompanies = async (req, res) => {
+  try {
+    if (!isSuperAdmin(req)) return res.status(403).json({ message: "SuperAdmin only" });
+
+    const includeInactive = String(req.query.includeInactive || '').toLowerCase() === 'true';
+    const companyFilter = includeInactive ? {} : { status: { $ne: 'Inactive' } };
+
+    const companies = await Company.find(companyFilter).sort({ createdAt: -1 }).lean();
+    res.json(companies);
+  } catch (e) {
+    console.error("getAllCompanies error:", e);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/* ================= 4) GET DASHBOARD STATS ================= */
+const getStats = async (req, res) => {
+  try {
+    if (!isSuperAdmin(req)) return res.status(403).json({ message: "SuperAdmin only" });
+
+    const [totalCompanies, activeRequests, pendingInquiries] = await Promise.all([
+      Company.countDocuments({ status: 'Active' }),
+      Company.countDocuments({ hrLimitRequest: 'Pending' }),
+      Inquiry.countDocuments({ status: 'Pending' })
+    ]);
+
+    res.json({ totalCompanies, activeRequests, pendingInquiries });
+  } catch (e) {
+    console.error("getStats error:", e);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+/* ================= 5) GET HR LIMIT REQUESTS ================= */
+const getHrRequests = async (req, res) => {
+  try {
+    if (!isSuperAdmin(req)) return res.status(403).json({ message: "SuperAdmin only" });
+
+    const requests = await Company.find({ hrLimitRequest: 'Pending' })
+      .select('name email maxHrAdmins hrLimitRequest createdAt')
+      .sort({ updatedAt: -1 })
+      .lean();
+
+    res.json(requests);
+  } catch (e) {
+    console.error("getHrRequests error:", e);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -443,6 +498,9 @@ const deleteCompany = async (req, res) => {
 module.exports = {
   getDashboardData,
   getAllInquiries,
+  getAllCompanies,
+  getStats,
+  getHrRequests,
   updateInquiry,
   approveInquiry,
   manageHrLimit,

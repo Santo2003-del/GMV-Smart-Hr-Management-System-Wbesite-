@@ -715,7 +715,8 @@ const markManualAttendance = async (req, res) => {
       st === 'Holiday' ? 'Holiday'
         : st === 'On Leave' ? 'Paid Leave'
           : st === 'Absent' ? 'Unpaid Leave'
-            : 'Manual';
+            : st === 'WFH' ? 'WFH'
+              : 'Manual';
 
     // For Holiday/Absent/Leave => no punch times, 0 hours
     const noTimes = (st === 'Holiday' || st === 'Absent' || st === 'On Leave');

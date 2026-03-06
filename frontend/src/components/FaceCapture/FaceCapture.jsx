@@ -60,14 +60,17 @@ const FaceCapture = ({ onCapture, btnText = "Verify Face" }) => {
         return;
       }
 
+      // Allow UI to update "Scanning..." state before heavy thread-blocking AI operations
+      await new Promise(resolve => setTimeout(resolve, 50));
+
       const img = await faceapi.fetchImage(screenshot);
 
       const detection = await faceapi
         .detectSingleFace(
           img,
           new faceapi.TinyFaceDetectorOptions({
-            inputSize: 160,
-            scoreThreshold: 0.5
+            inputSize: 128, // optimized input size
+            scoreThreshold: 0.4 // more forgiving in low light
           })
         )
         .withFaceLandmarks()
@@ -125,10 +128,10 @@ const FaceCapture = ({ onCapture, btnText = "Verify Face" }) => {
             mirrored
             screenshotFormat="image/jpeg"
             videoConstraints={{
-              width: 320,
-              height: 320,
+              width: 240,
+              height: 240,
               facingMode: "user",
-              frameRate: { ideal: 15 }
+              frameRate: { ideal: 10, max: 15 }
             }}
             className="webcam"
           />

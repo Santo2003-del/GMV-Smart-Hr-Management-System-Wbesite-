@@ -213,19 +213,16 @@ const HrAdminEmployeeView = () => {
         ]);
 
         // Normalize data based on response structure
-        if (Array.isArray(histRes)) {
-          historyData = histRes;
-        } else if (Array.isArray(histRes?.data)) {
-          historyData = histRes.data;
-        } else if (Array.isArray(histRes?.history)) {
-          historyData = histRes.history;
-        } else if (Array.isArray(histRes?.data?.history)) {
-          historyData = histRes.data.history;
-        } else if (histRes && typeof histRes === 'object') {
-          // If it's a single record or unexpected object, start with empty
-          // But if it has a 'user' key, we might extract user later
-          if (histRes.user) setUser(normalizeUser(histRes.user));
-          if (Array.isArray(histRes.attendance)) historyData = histRes.attendance;
+        const data = histRes?.data || histRes;
+
+        if (Array.isArray(data)) {
+          historyData = data;
+        } else if (data && typeof data === 'object') {
+          if (Array.isArray(data.history)) historyData = data.history;
+          else if (Array.isArray(data.attendance)) historyData = data.attendance;
+          else if (Array.isArray(data.data)) historyData = data.data;
+
+          if (data.user) setUser(normalizeUser(data.user));
         }
 
       } catch (e) {
@@ -577,6 +574,7 @@ const HrAdminEmployeeView = () => {
                 <select value={manualStatus} onChange={(e) => setManualStatus(e.target.value)}>
                   <option value="Present">Present</option>
                   <option value="HalfDay">Half Day</option>
+                  <option value="WFH">Work From Home</option>
                   <option value="On Leave">Mark Paid Leave</option>
                   <option value="Absent">Mark Absent</option>
                   <option value="Holiday">Holiday</option>

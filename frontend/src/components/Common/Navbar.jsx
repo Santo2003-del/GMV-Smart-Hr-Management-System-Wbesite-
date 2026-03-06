@@ -124,17 +124,17 @@ const Navbar = () => {
           {/* MOBILE ACTIONS */}
           <div className="mobile-only">
             {!showRoleNav && (
-              <Link to="/partner-with-us" onClick={closeMenu} className="mobile-btn partner">Partner With Us</Link>
+              <Link to="/partner-with-us" onClick={() => setMenuOpen(false)} className="mobile-btn partner">Partner With Us</Link>
             )}
             {user ? (
               <>
                 <button onClick={goDashboard} className="mobile-btn dashboard">Dashboard</button>
-                <button onClick={() => { logout('/'); closeMenu(); }} className="mobile-btn logout">Logout</button>
+                <button onClick={() => { logout('/'); setMenuOpen(false); }} className="mobile-btn logout">Logout</button>
               </>
             ) : (
               <>
-                <Link to="/login" onClick={closeMenu} className="mobile-btn login">Login</Link>
-                <Link to="/register" onClick={closeMenu} className="mobile-btn get-started">Get Started</Link>
+                <Link to="/login" onClick={() => setMenuOpen(false)} className="mobile-btn login">Login</Link>
+                <Link to="/register" onClick={() => setMenuOpen(false)} className="mobile-btn get-started">Get Started</Link>
               </>
             )}
           </div>
@@ -392,11 +392,12 @@ const Navbar = () => {
             left: 0;
             right: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             height: 100dvh;
             background: #0b0f19;
             flex-direction: column;
-            padding: 68px 20px 20px 20px;
+            padding: 80px 20px 40px 20px;
+            box-sizing: border-box; /* CRITICAL FOR NOT CUTTING OFF BOTTOM BUTTONS */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease;
@@ -405,6 +406,7 @@ const Navbar = () => {
             gap: 4px;
             z-index: 9999;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
             box-shadow: none;
@@ -446,9 +448,11 @@ const Navbar = () => {
             display: flex; 
             flex-direction: column; 
             width: 100%; 
-            gap: 8px; 
+            gap: 12px; 
             margin-top: auto;
-            padding-top: 12px; 
+            padding-top: 16px; 
+            padding-bottom: 20px;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
           }
           

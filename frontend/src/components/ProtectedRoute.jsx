@@ -23,7 +23,7 @@ const ProtectedRoute = ({ allowedRoles, redirectUnauthorizedTo = "/unauthorized"
 
   if (loading) {
     return (
-      <div style={{ height: "100vh", display: "grid", placeItems: "center" }}>
+      <div style={{ height: "100vh", display: "grid", placeItems: "center", color: "#f8fafc" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontWeight: 800 }}>Loading Access…</div>
           <div style={{ opacity: 0.7, fontSize: 12 }}>Please wait</div>
@@ -39,7 +39,7 @@ const ProtectedRoute = ({ allowedRoles, redirectUnauthorizedTo = "/unauthorized"
   // ✅ token hai but user null -> show restoring (instead of letting route open blindly)
   if (!user) {
     return (
-      <div style={{ height: "100vh", display: "grid", placeItems: "center" }}>
+      <div style={{ height: "100vh", display: "grid", placeItems: "center", color: "#f8fafc" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontWeight: 800 }}>Restoring session…</div>
           <div style={{ opacity: 0.7, fontSize: 12 }}>Refreshing user profile</div>

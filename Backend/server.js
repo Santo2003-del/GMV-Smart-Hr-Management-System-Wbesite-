@@ -98,13 +98,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// 6. Global Rate Limiter — 100 requests per 15 min per IP
-const globalLimiter = rateLimit({
+// 6. Global Rate Limiter — 1000 requests per 15 min per IP
+const { createRateLimiter } = require("./utils/rateLimitHelper");
+
+const globalLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
+  max: 1000,
   message: { message: "Too many requests, please try again later." },
+  redisKeyPrefix: "rl:global:",
 });
 app.use("/api", globalLimiter);
 

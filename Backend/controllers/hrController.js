@@ -1,5 +1,9 @@
 // Backend/controllers/hrController.js
 const User = require('../models/User');
+const Employee = require('../models/Employee');
+const Admin = require('../models/Admin');
+const CompanyAdmin = require('../models/CompanyAdmin');
+const SuperAdmin = require('../models/SuperAdmin');
 const Attendance = require('../models/Attendance');
 const Leave = require('../models/Leave');
 const Holiday = require('../models/Holiday');
@@ -402,7 +406,8 @@ const addManualAttendance = async (req, res) => {
       status === 'Holiday' ? 'Holiday'
         : status === 'On Leave' ? 'Paid Leave'
           : status === 'Absent' ? 'Unpaid Leave'
-            : 'Manual';
+            : status === 'WFH' ? 'WFH'
+              : 'Manual';
 
     const updateData = {
       userId: user._id,
@@ -840,8 +845,25 @@ const manageWfhRequest = async (req, res) => {
   }
 };
 
+const getEmployeeById = async (req, res) => {
+  try {
+    if (!isHrRole(req.user?.role)) return res.status(403).json({ message: 'HR Access Required' });
+
+    const user = await User.findById(req.params.userId).select('-password -faceDescriptor -faceDescriptorVec').lean();
+    if (!user || user.isDeleted) return res.status(404).json({ message: 'User not found' });
+
+    if (!guardSameCompany(req, user.companyId)) return res.status(403).json({ message: 'Access denied' });
+
+    res.json(user);
+  } catch (err) {
+    console.error('getEmployeeById error:', err);
+    res.status(500).json({ message: 'Fetch failed' });
+  }
+};
+
 module.exports = {
   getAllEmployees,
+  getEmployeeById,
   updateEmployeeDetails,
   approveEmployee,
   deleteEmployee,
